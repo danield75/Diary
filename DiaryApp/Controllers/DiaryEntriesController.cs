@@ -26,22 +26,40 @@ namespace DiaryApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(DiaryEntry de)
+        public IActionResult Create(DiaryEntry diaryEntry)
         {
-            if (de != null && de.Title.Length < 3)
+            if (diaryEntry != null && diaryEntry.Title.Length < 3)
             {
                 ModelState.AddModelError("Title", "Title to short");
             }
 
             if (ModelState.IsValid)
             {
-                _db.DiaryEntries.Add(de); // Adds the new diary entry to the database
+                _db.DiaryEntries.Add(diaryEntry); // Adds the new diary entry to the database
                 _db.SaveChanges(); // Saves the changes to the database
 
                 return RedirectToAction("Index");
             }
 
-            return View(de);
+            return View(diaryEntry);
+        }
+
+        [HttpGet]
+        public IActionResult Edit(int? id)
+        {
+            if(id == null || id == 0)
+            {
+                return NotFound();
+            }
+
+            DiaryEntry? diaryEntry = _db.DiaryEntries.Find(id);
+
+            if (diaryEntry == null)
+            {
+                return NotFound();
+            }
+
+            return View(diaryEntry);
         }
     }
 }
