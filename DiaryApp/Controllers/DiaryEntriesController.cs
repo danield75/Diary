@@ -1,6 +1,7 @@
 ﻿using DiaryApp.Data;
 using DiaryApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DiaryApp.Controllers
 {
@@ -94,6 +95,20 @@ namespace DiaryApp.Controllers
             if (diaryEntry == null)
             {
                 return NotFound();
+            }
+
+            return View(diaryEntry);
+        }
+
+        [HttpPost]
+        public IActionResult Delete(DiaryEntry diaryEntry)
+        {
+            if (diaryEntry != null)
+            {
+                _db.DiaryEntries.Remove(diaryEntry); // Removes the diary entry
+                _db.SaveChanges(); // Saves the changes
+
+                return RedirectToAction("Index");
             }
 
             return View(diaryEntry);
