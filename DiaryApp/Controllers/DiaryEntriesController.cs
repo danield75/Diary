@@ -33,7 +33,7 @@ namespace DiaryApp.Controllers
                 ModelState.AddModelError("Title", "Title to short");
             }
 
-            if (ModelState.IsValid)
+            if (diaryEntry != null && ModelState.IsValid)
             {
                 _db.DiaryEntries.Add(diaryEntry); // Adds the new diary entry to the database
                 _db.SaveChanges(); // Saves the changes to the database
@@ -57,6 +57,25 @@ namespace DiaryApp.Controllers
             if (diaryEntry == null)
             {
                 return NotFound();
+            }
+
+            return View(diaryEntry);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(DiaryEntry diaryEntry)
+        {
+            if (diaryEntry != null && diaryEntry.Title.Length < 3)
+            {
+                ModelState.AddModelError("Title", "Title to short");
+            }
+
+            if (diaryEntry != null && ModelState.IsValid)
+            {
+                _db.DiaryEntries.Update(diaryEntry); // Updates the diary entry
+                _db.SaveChanges(); // Saves the changes
+
+                return RedirectToAction("Index");
             }
 
             return View(diaryEntry);
